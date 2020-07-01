@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="team.stackoverflow.personalsite.mapper.testMapper">
+    <!--把BaseResultMap改成XxxxResultMapper type字段的team.stackoverflow.personalsite.pojo.Xxxx改成Xxxx-->
+    <resultMap id="TestResultMap" type="Test">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="test_info" jdbcType="VARCHAR" property="testInfo"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, test_info
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="Integer" resultMap="TestResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_test
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="Integer">
+    delete from tb_test
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" parameterType="Test">
+    insert into tb_test (id, test_info)
+    values (#{id,jdbcType=BIGINT}, #{testInfo,jdbcType=VARCHAR})
+  </insert>
+    <insert id="insertSelective" parameterType="Test">
+        insert into tb_test
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="testInfo != null">
+                test_info,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="testInfo != null">
+                #{testInfo,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="Test">
+        update tb_test
+        <set>
+            <if test="testInfo != null">
+                test_info = #{testInfo,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="Test">
+    update tb_test
+    set test_info = #{testInfo,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

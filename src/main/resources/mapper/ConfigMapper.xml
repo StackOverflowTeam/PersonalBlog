@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="team.stackoverflow.personalsite.mapper.ConfigMapper">
+    <resultMap id="ConfigResultMap" type="Config">
+        <id column="config_name" jdbcType="VARCHAR" property="configName"/>
+        <result column="config_value" jdbcType="VARCHAR" property="configValue"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    config_name, config_value, create_time, update_time
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="String" resultMap="ConfigResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ps_config
+        where config_name = #{configName,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="String">
+    delete from ps_config
+    where config_name = #{configName,jdbcType=VARCHAR}
+  </delete>
+    <insert id="insert" parameterType="Config">
+    insert into ps_config (config_name, config_value, create_time, 
+      update_time)
+    values (#{configName,jdbcType=VARCHAR}, #{configValue,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+    <insert id="insertSelective" parameterType="Config">
+        insert into ps_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="configName != null">
+                config_name,
+            </if>
+            <if test="configValue != null">
+                config_value,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="configName != null">
+                #{configName,jdbcType=VARCHAR},
+            </if>
+            <if test="configValue != null">
+                #{configValue,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="Config">
+        update ps_config
+        <set>
+            <if test="configValue != null">
+                config_value = #{configValue,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where config_name = #{configName,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="Config">
+    update ps_config
+    set config_value = #{configValue,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where config_name = #{configName,jdbcType=VARCHAR}
+  </update>
+</mapper>
