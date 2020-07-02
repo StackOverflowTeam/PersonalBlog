@@ -28,17 +28,22 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public int getCount(Map<String, Object> blogMap) {
-        return 0;
+        return blogMapper.getCount(blogMap);
+    }
+
+    @Override
+    public Blog selectByPrimaryKey(Long blogId) {
+        return blogMapper.selectByPrimaryKey(blogId);
     }
 
     @Override
     public int saveBlog(Blog blog) {
-        return 0;
+        return blogMapper.insertSelective(blog);
     }
 
     @Override
     public int updateBlog(Blog blog) {
-        return 0;
+        return blogMapper.updateByPrimaryKeySelective(blog);
     }
 
     @Override

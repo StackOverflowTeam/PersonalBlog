@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static team.stackoverflow.personalsite.util.TimeUtil.getDateTimeString;
+
 /**
  * @ClassName AdminController
  * @Description 后台相关接口
@@ -58,4 +60,31 @@ public class AdminController {
         return objectMap;
     }
 
+    /**
+     * @return
+     * @Author 张清
+     * @Description 根据blogid返回blog
+     * @Date 2020/7/2 11:19
+     * @Param
+     **/
+    @RequestMapping(value = "/getBlogByBlogId", method = RequestMethod.POST)
+    public Blog getBlog(@RequestParam Long blogId) {
+        return blogService.selectByPrimaryKey(blogId);
+    }
+
+    @RequestMapping(value = "/saveBlog", method = RequestMethod.POST)
+    public RespBean saveBlog(@RequestParam Blog blog) {
+        int result = 0;
+        if (blog.getBlogId() == null) {
+            blog.setCreateTime(getDateTimeString());
+            result = blogService.saveBlog(blog);
+        } else {
+            result = blogService.updateBlog(blog);
+        }
+        if (result > 0) {
+            return new RespBean("success", "success");
+        } else {
+            return new RespBean("error", "failure");
+        }
+    }
 }

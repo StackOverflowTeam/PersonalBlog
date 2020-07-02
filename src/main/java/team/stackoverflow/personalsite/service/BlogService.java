@@ -17,6 +17,8 @@ public interface BlogService {
 
     int getCount(Map<String, Object> blogMap);
 
+    Blog selectByPrimaryKey(Long blogId);
+
     int saveBlog(Blog blog);
 
     int updateBlog(Blog blog);
