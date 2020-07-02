@@ -21,6 +21,27 @@
         from ps_link
         where link_id = #{linkId,jdbcType=INTEGER}
     </select>
+    <select id="findLinkList" parameterType="Map" resultMap="LinkResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ps_link
+        where is_deleted=0
+        order by link_id desc
+        <if test="start!=null and limit!=null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+    <select id="getTotalLinks" parameterType="Map" resultType="int">
+        select count(*)  from ps_link
+        where is_deleted=0
+    </select>
+    <update id="deleteBatch">
+        update ps_link
+        set is_deleted=1 where link_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
     <delete id="deleteByPrimaryKey" parameterType="Integer">
     delete from ps_link
     where link_id = #{linkId,jdbcType=INTEGER}

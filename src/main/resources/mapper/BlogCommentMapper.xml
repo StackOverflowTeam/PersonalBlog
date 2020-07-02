@@ -19,6 +19,47 @@
     comment_id, blog_id, commentator, email, website_url, comment_body, comment_create_time, 
     commentator_ip, reply_body, reply_create_time, comment_status, is_deleted
   </sql>
+    <select id="findBlogCommentList" parameterType="Map" resultMap="BlogCommentResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ps_blog_comment
+        where is_deleted=0
+        <if test="blogId!=null">
+            AND blog_id = #{blogId}
+        </if>
+        <if test="commentStatus!=null">
+            AND comment_status = #{commentStatus}
+        </if>
+        order by comment_id desc
+        <if test="start!=null and limit!=null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+    <select id="getTotalBlogComments" parameterType="Map" resultType="int">
+        select count(*) from ps_blog_comment
+        where is_deleted=0
+        <if test="blogId!=null">
+            AND blog_id = #{blogId}
+        </if>
+        <if test="commentStatus!=null">
+            AND comment_status = #{commentStatus}
+        </if>
+    </select>
+    <update id="checkDone">
+        update ps_blog_comment
+        set comment_status=1 where comment_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        and comment_status = 0
+    </update>
+    <update id="deleteBatch">
+        update ps_blog_comment
+        set is_deleted=1 where comment_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
     <select id="selectByPrimaryKey" parameterType="Integer" resultMap="BlogCommentResultMap">
         select
         <include refid="Base_Column_List"/>

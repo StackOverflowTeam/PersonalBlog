@@ -11,6 +11,7 @@ import java.util.Map;
  * @Author ASUS
  * @Date 2020/7/2 8:35
  */
+
 public interface BlogService {
 
     List<Blog> getBlogsListByConditionPages(Map<String, Object> blogMap);

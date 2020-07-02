@@ -1,7 +1,13 @@
 package team.stackoverflow.personalsite.mapper;
 
+import org.apache.ibatis.annotations.Mapper;
 import team.stackoverflow.personalsite.pojo.BlogTag;
+import team.stackoverflow.personalsite.pojo.BlogTagCount;
+import team.stackoverflow.personalsite.util.PageQueryUtil;
 
+import java.util.List;
+
+@Mapper
 public interface BlogTagMapper {
     int deleteByPrimaryKey(Integer tagId);
 
@@ -14,4 +20,16 @@ public interface BlogTagMapper {
     int updateByPrimaryKeySelective(BlogTag record);
 
     int updateByPrimaryKey(BlogTag record);
+    
+    List<BlogTag> findTagList(PageQueryUtil pageUtil);
+    
+    List<BlogTagCount> getTagCount();
+    
+    int getTotalTags(PageQueryUtil pageUtil);
+    
+    int deleteBatch(Integer[] ids);
+    
+    int batchInsertBlogTag(List<BlogTag> tagList);
+    
+    BlogTag selectByTagName(String tagName);
 }

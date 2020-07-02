@@ -16,6 +16,11 @@
         from ps_config
         where config_name = #{configName,jdbcType=VARCHAR}
     </select>
+    <select id="selectAll" resultMap="ConfigResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ps_config
+    </select>
     <delete id="deleteByPrimaryKey" parameterType="String">
     delete from ps_config
     where config_name = #{configName,jdbcType=VARCHAR}

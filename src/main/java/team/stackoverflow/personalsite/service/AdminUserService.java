@@ -8,6 +8,7 @@ import team.stackoverflow.personalsite.pojo.AdminUser;
  * @Author 张清
  * @Date 2020/7/1 16:18
  */
+
 public interface AdminUserService {
     /**
      * @return
