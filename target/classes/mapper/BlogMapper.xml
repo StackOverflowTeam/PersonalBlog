@@ -28,8 +28,7 @@
   </sql>
 
     <select id="getBlogsListByConditionPages" parameterType="java.util.Map" resultMap="BlogResultMap">
-        select
-        <include refid="Base_Column_List"/>
+        select <include refid="Base_Column_List"/>
         from ps_blog
         where is_deleted !=1
         <bind name="offset" value="(pageNo-1)*pageSize"/>
@@ -41,11 +40,11 @@
         where is_deleted !=1
     </select>
     <!--更新状态有两个状态要改-->
-    <!-- <update id="updateStatus" parameterType="java.util.Map">
-         update ps_blog
-         set
-         where blog_id = #{blogId,jdbcType=INTEGER}
-     </update>-->
+   <!-- <update id="updateStatus" parameterType="java.util.Map">
+        update ps_blog
+        set
+        where blog_id = #{blogId,jdbcType=INTEGER}
+    </update>-->
     <!--以下自动生成-->
     <select id="selectByPrimaryKey" parameterType="Long" resultMap="ResultMapWithBLOBs">
         select

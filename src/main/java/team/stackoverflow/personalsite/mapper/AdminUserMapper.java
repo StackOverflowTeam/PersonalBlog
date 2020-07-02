@@ -1,7 +1,9 @@
 package team.stackoverflow.personalsite.mapper;
 
+import org.apache.ibatis.annotations.Mapper;
 import team.stackoverflow.personalsite.pojo.AdminUser;
 
+@Mapper
 public interface AdminUserMapper {
     int deleteByPrimaryKey(Integer adminUserId);
 
@@ -14,4 +16,6 @@ public interface AdminUserMapper {
     int updateByPrimaryKeySelective(AdminUser record);
 
     int updateByPrimaryKey(AdminUser record);
+
+    AdminUser selectByAdminUser(AdminUser adminUser);
 }

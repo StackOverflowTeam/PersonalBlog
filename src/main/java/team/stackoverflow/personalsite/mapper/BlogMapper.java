@@ -1,7 +1,12 @@
 package team.stackoverflow.personalsite.mapper;
 
+import org.apache.ibatis.annotations.Mapper;
 import team.stackoverflow.personalsite.pojo.Blog;
 
+import java.util.List;
+import java.util.Map;
+
+@Mapper
 public interface BlogMapper {
     int deleteByPrimaryKey(Long blogId);
 
@@ -16,4 +21,11 @@ public interface BlogMapper {
     int updateByPrimaryKeyWithBLOBs(Blog record);
 
     int updateByPrimaryKey(Blog record);
+
+    List<Blog> getBlogsListByConditionPages(Map<String, Object> blogMap);
+
+    int getCount(Map<String, Object> blogMap);
+
+//    有两种状态需要更新
+//    int updateStatus(Map<String,Object> statusMap);
 }
