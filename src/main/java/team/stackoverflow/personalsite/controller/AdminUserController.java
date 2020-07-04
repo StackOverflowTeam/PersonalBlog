@@ -34,4 +34,6 @@ public class AdminUserController {
     public AdminUser login(@RequestBody AdminUser adminUser) {
         return adminUserService.login(adminUser);
     }
+    
+    
 }

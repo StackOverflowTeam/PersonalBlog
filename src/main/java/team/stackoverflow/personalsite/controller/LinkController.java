@@ -1,16 +1,13 @@
 package team.stackoverflow.personalsite.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import team.stackoverflow.personalsite.pojo.Link;
 import team.stackoverflow.personalsite.service.LinkService;
 import team.stackoverflow.personalsite.util.PageQueryUtil;
-import team.stackoverflow.personalsite.util.Result;
-import team.stackoverflow.personalsite.util.ResultGenerator;
+import team.stackoverflow.personalsite.util.PageResult;
+import team.stackoverflow.personalsite.util.RespBean;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
@@ -19,98 +16,78 @@ import java.util.Map;
  * @Version 1.0
  */
 
-@Controller
+@RestController
+@RequestMapping("/links")
 public class LinkController {
 	@Resource
 	private LinkService linkService;
 	
-	@GetMapping("/links")
-	public String linkPage(HttpServletRequest request) {
-		request.setAttribute("path", "links");
-		return "link";
-	}
-	
-	@GetMapping("/links/list")
-	@ResponseBody
-	public Result list(@RequestParam Map<String, Object> params) {
-		if (StringUtils.isEmpty(params.get("page")) || StringUtils.isEmpty(params.get("limit"))) {
-			return ResultGenerator.genFailResult("参数异常！");
-		}
+	@GetMapping("/list")
+	public PageResult list(@RequestParam Map<String, Object> params) {
 		PageQueryUtil pageUtil = new PageQueryUtil(params);
-		return ResultGenerator.genSuccessResult(linkService.getBlogLinkPage(pageUtil));
+		return linkService.getBlogLinkPage(pageUtil);
 	}
 	
-	/**
-	 * 友链添加
-	 */
-	@RequestMapping(value = "/links/save", method = RequestMethod.POST)
-	@ResponseBody
-	public Result save(@RequestParam("linkType") Integer linkType,
-	                   @RequestParam("linkName") String linkName,
-	                   @RequestParam("linkUrl") String linkUrl,
-	                   @RequestParam("linkRank") Integer linkRank,
-	                   @RequestParam("linkDescription") String linkDescription) {
-		if (linkType == null || linkType < 0 || linkRank == null || linkRank < 0 || StringUtils.isEmpty(linkName) || StringUtils.isEmpty(linkName) || StringUtils.isEmpty(linkUrl) || StringUtils.isEmpty(linkDescription)) {
-			return ResultGenerator.genFailResult("参数异常！");
-		}
+	//友链添加
+	@RequestMapping(value = "/save", method = RequestMethod.POST)
+	public RespBean save(@RequestParam("linkType") Integer linkType,
+	                     @RequestParam("linkName") String linkName,
+	                     @RequestParam("linkUrl") String linkUrl,
+	                     @RequestParam("linkRank") Integer linkRank,
+	                     @RequestParam("linkDescription") String linkDescription) {
 		Link link = new Link();
 		link.setLinkType(linkType.byteValue());
 		link.setLinkRank(linkRank);
 		link.setLinkName(linkName);
 		link.setLinkUrl(linkUrl);
 		link.setLinkDescription(linkDescription);
-		return ResultGenerator.genSuccessResult(linkService.saveLink(link));
+		if (linkService.saveLink(link)) {
+			return new RespBean("success", "success");
+		} else {
+			return new RespBean("error", "failure");
+		}
 	}
 	
-	/**
-	 * 详情
-	 */
-	@GetMapping("/links/info/{id}")
-	@ResponseBody
-	public Result info(@PathVariable("id") Integer id) {
-		Link link = linkService.selectById(id);
-		return ResultGenerator.genSuccessResult(link);
+	//详情
+	@GetMapping("/info/{id}")
+	public Link info(@PathVariable("id") Integer id) {
+		return linkService.selectById(id);
 	}
 	
-	/**
-	 * 友链修改
-	 */
-	@RequestMapping(value = "/links/update", method = RequestMethod.POST)
-	@ResponseBody
-	public Result update(@RequestParam("linkId") Integer linkId,
-	                     @RequestParam("linkType") Integer linkType,
-	                     @RequestParam("linkName") String linkName,
-	                     @RequestParam("linkUrl") String linkUrl,
-	                     @RequestParam("linkRank") Integer linkRank,
-	                     @RequestParam("linkDescription") String linkDescription) {
+	//友链修改
+	@RequestMapping(value = "/update", method = RequestMethod.POST)
+	public RespBean update(@RequestParam("linkId") Integer linkId,
+	                       @RequestParam("linkType") Integer linkType,
+	                       @RequestParam("linkName") String linkName,
+	                       @RequestParam("linkUrl") String linkUrl,
+	                       @RequestParam("linkRank") Integer linkRank,
+	                       @RequestParam("linkDescription") String linkDescription) {
 		Link tempLink = linkService.selectById(linkId);
-		if (tempLink == null) {
-			return ResultGenerator.genFailResult("无数据！");
-		}
-		if (linkType == null || linkType < 0 || linkRank == null || linkRank < 0 || StringUtils.isEmpty(linkName) || StringUtils.isEmpty(linkName) || StringUtils.isEmpty(linkUrl) || StringUtils.isEmpty(linkDescription)) {
-			return ResultGenerator.genFailResult("参数异常！");
-		}
 		tempLink.setLinkType(linkType.byteValue());
 		tempLink.setLinkRank(linkRank);
 		tempLink.setLinkName(linkName);
 		tempLink.setLinkUrl(linkUrl);
 		tempLink.setLinkDescription(linkDescription);
-		return ResultGenerator.genSuccessResult(linkService.updateLink(tempLink));
+		if (linkService.updateLink(tempLink)) {
+			return new RespBean("success", "success");
+		} else {
+			return new RespBean("error", "failure");
+		}
 	}
 	
-	/**
-	 * 友链删除
-	 */
-	@RequestMapping(value = "/links/delete", method = RequestMethod.POST)
-	@ResponseBody
-	public Result delete(@RequestBody Integer[] ids) {
-		if (ids.length < 1) {
-			return ResultGenerator.genFailResult("参数异常！");
-		}
+	//友链删除
+	@RequestMapping(value = "/delete", method = RequestMethod.POST)
+	public RespBean delete(@RequestBody Integer[] ids) {
 		if (linkService.deleteBatch(ids)) {
-			return ResultGenerator.genSuccessResult();
+			return new RespBean("success", "success");
 		} else {
-			return ResultGenerator.genFailResult("删除失败");
+			return new RespBean("error", "failure");
 		}
+	}
+	
+	//获取数量
+	@RequestMapping(value = "/count", method = RequestMethod.POST)
+	public int countLink() {
+		return linkService.getTotalLinks();
 	}
 }

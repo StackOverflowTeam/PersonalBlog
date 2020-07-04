@@ -1,8 +1,9 @@
 package team.stackoverflow.personalsite.service;
 
 import team.stackoverflow.personalsite.pojo.Blog;
+import team.stackoverflow.personalsite.util.PageQueryUtil;
+import team.stackoverflow.personalsite.util.PageResult;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -13,10 +14,7 @@ import java.util.Map;
  */
 
 public interface BlogService {
-
-    List<Blog> getBlogsListByConditionPages(Map<String, Object> blogMap);
-
-    int getCount(Map<String, Object> blogMap);
+    PageResult getBlogPage(PageQueryUtil pageUtil);
 
     Blog selectByPrimaryKey(Long blogId);
 
@@ -25,4 +23,6 @@ public interface BlogService {
     int updateBlog(Blog blog);
 
     int updateState(Map<String, Object> stateMap);
+    
+    int getTotalBlogs();
 }

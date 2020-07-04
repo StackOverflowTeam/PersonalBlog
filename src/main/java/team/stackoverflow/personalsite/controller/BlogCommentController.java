@@ -1,15 +1,12 @@
 package team.stackoverflow.personalsite.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import team.stackoverflow.personalsite.service.BlogCommentService;
 import team.stackoverflow.personalsite.util.PageQueryUtil;
-import team.stackoverflow.personalsite.util.Result;
-import team.stackoverflow.personalsite.util.ResultGenerator;
+import team.stackoverflow.personalsite.util.PageResult;
+import team.stackoverflow.personalsite.util.RespBean;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
@@ -18,64 +15,48 @@ import java.util.Map;
  * @Version 1.0
  */
 
-@Controller
+@RestController
+@RequestMapping("/comments")
 public class BlogCommentController {
 	@Resource
 	private BlogCommentService blogCommentService;
 	
-	@GetMapping("/comments/list")
-	@ResponseBody
-	public Result list(@RequestParam Map<String, Object> params) {
-		if (StringUtils.isEmpty(params.get("page")) || StringUtils.isEmpty(params.get("limit"))) {
-			return ResultGenerator.genFailResult("参数异常！");
-		}
+	@GetMapping("/list")
+	public PageResult list(@RequestParam Map<String, Object> params) {
 		PageQueryUtil pageUtil = new PageQueryUtil(params);
-		return ResultGenerator.genSuccessResult(blogCommentService.getCommentsPage(pageUtil));
+		return blogCommentService.getCommentsPage(pageUtil);
 	}
 	
-	@PostMapping("/comments/checkDone")
-	@ResponseBody
-	public Result checkDone(@RequestBody Integer[] ids) {
-		if (ids.length < 1) {
-			return ResultGenerator.genFailResult("参数异常！");
-		}
+	@PostMapping("/checkDone")
+	public RespBean checkDone(@RequestBody Integer[] ids) {
 		if (blogCommentService.checkDone(ids)) {
-			return ResultGenerator.genSuccessResult();
+			return new RespBean("success", "success");
 		} else {
-			return ResultGenerator.genFailResult("审核失败");
+			return new RespBean("error", "failure");
 		}
 	}
 	
-	@PostMapping("/comments/reply")
-	@ResponseBody
-	public Result checkDone(@RequestParam("commentId") Integer commentId,
-	                        @RequestParam("replyBody") String replyBody) {
-		if (commentId == null || commentId < 1 || StringUtils.isEmpty(replyBody)) {
-			return ResultGenerator.genFailResult("参数异常！");
-		}
+	@PostMapping("/reply")
+	public RespBean checkDone(@RequestParam("commentId") Integer commentId,
+	                          @RequestParam("replyBody") String replyBody) {
 		if (blogCommentService.reply(commentId, replyBody)) {
-			return ResultGenerator.genSuccessResult();
+			return new RespBean("success", "success");
 		} else {
-			return ResultGenerator.genFailResult("回复失败");
+			return new RespBean("error", "failure");
 		}
 	}
 	
-	@PostMapping("/comments/delete")
-	@ResponseBody
-	public Result delete(@RequestBody Integer[] ids) {
-		if (ids.length < 1) {
-			return ResultGenerator.genFailResult("参数异常！");
-		}
+	@PostMapping("/delete")
+	public RespBean delete(@RequestBody Integer[] ids) {
 		if (blogCommentService.deleteBatch(ids)) {
-			return ResultGenerator.genSuccessResult();
+			return new RespBean("success", "success");
 		} else {
-			return ResultGenerator.genFailResult("刪除失败");
+			return new RespBean("error", "failure");
 		}
 	}
 	
-	@GetMapping("/comments")
-	public String list(HttpServletRequest request) {
-		request.setAttribute("path", "comments");
-		return "comment";
+	@RequestMapping(value = "/count", method = RequestMethod.POST)
+	public int countComment() {
+		return blogCommentService.getTotalComments();
 	}
 }

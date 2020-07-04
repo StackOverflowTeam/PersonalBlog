@@ -1,17 +1,16 @@
 package team.stackoverflow.personalsite.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import team.stackoverflow.personalsite.pojo.Blog;
 import team.stackoverflow.personalsite.service.BlogService;
+import team.stackoverflow.personalsite.util.PageQueryUtil;
+import team.stackoverflow.personalsite.util.PageResult;
 import team.stackoverflow.personalsite.util.RespBean;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static team.stackoverflow.personalsite.util.TimeUtil.getDateTimeString;
@@ -22,7 +21,8 @@ import static team.stackoverflow.personalsite.util.TimeUtil.getDateTimeString;
  * @Version 1.0
  */
 
-@Controller
+@RestController
+@RequestMapping("/blogs")
 public class BlogController {
 	@Resource
 	private BlogService blogService;
@@ -34,14 +34,10 @@ public class BlogController {
 	 * @Date 2020/7/2 10:19
 	 * @Param
 	 **/
-	@RequestMapping(value = "/blogList", method = RequestMethod.POST)
-	public Map<String, Object> getBlogsListByConditionPages(@RequestBody Map<String, Object> blogMap) {
-		int count = blogService.getCount(blogMap);
-		List<Blog> blogList = blogService.getBlogsListByConditionPages(blogMap);
-		Map<String, Object> objectMap = new HashMap<>();
-		objectMap.put("count", count);
-		objectMap.put("list", blogList);
-		return objectMap;
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	public PageResult list(@RequestParam Map<String, Object> params) {
+		PageQueryUtil pageUtil = new PageQueryUtil(params);
+		return blogService.getBlogPage(pageUtil);
 	}
 	
 	/**
@@ -51,12 +47,12 @@ public class BlogController {
 	 * @Date 2020/7/2 11:19
 	 * @Param
 	 **/
-	@RequestMapping(value = "/getBlogByBlogId", method = RequestMethod.POST)
+	@RequestMapping(value = "/id", method = RequestMethod.POST)
 	public Blog getBlog(@RequestParam Long blogId) {
 		return blogService.selectByPrimaryKey(blogId);
 	}
 	
-	@RequestMapping(value = "/saveBlog", method = RequestMethod.POST)
+	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public RespBean saveBlog(@RequestParam Blog blog) {
 		int result;
 		if (blog.getBlogId() == null) {
@@ -70,5 +66,11 @@ public class BlogController {
 		} else {
 			return new RespBean("error", "failure");
 		}
+	}
+	
+	//获取数量
+	@RequestMapping(value = "/count", method = RequestMethod.POST)
+	public int countBlog() {
+		return blogService.getTotalBlogs();
 	}
 }

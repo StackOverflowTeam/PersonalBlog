@@ -1,6 +1,5 @@
 package team.stackoverflow.personalsite.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import team.stackoverflow.personalsite.mapper.ConfigMapper;

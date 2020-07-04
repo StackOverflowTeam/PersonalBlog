@@ -27,18 +27,37 @@
     blog_content
   </sql>
 
-    <select id="getBlogsListByConditionPages" parameterType="java.util.Map" resultMap="BlogResultMap">
+    <select id="getTotalBlogs" parameterType="Map" resultType="int">
+        select count(*) from ps_blog
+        where is_deleted=0
+        <if test="keyword!=null">
+            AND (blog_title like CONCAT('%',#{keyword},'%' ) or blog_category_name like CONCAT('%',#{keyword},'%' ))
+        </if>
+        <if test="blogStatus!=null">
+            AND blog_status = #{blogStatus}
+        </if>
+        <if test="blogCategoryId!=null">
+            AND blog_category_id = #{blogCategoryId}
+        </if>
+    </select>
+    <select id="findBlogList" parameterType="Map" resultMap="BlogResultMap">
         select
         <include refid="Base_Column_List"/>
         from ps_blog
-        where is_deleted !=1
-        <bind name="offset" value="(pageNo-1)*pageSize"/>
-        limit #{offset,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
-    </select>
-    <select id="getCount" parameterType="java.util.Map" resultType="Integer">
-        select count(blog_id)
-        from ps_blog
-        where is_deleted !=1
+        where is_deleted=0
+        <if test="keyword!=null">
+            AND (blog_title like CONCAT('%',#{keyword},'%' ) or blog_category_name like CONCAT('%',#{keyword},'%' ))
+        </if>
+        <if test="blogStatus!=null">
+            AND blog_status = #{blogStatus}
+        </if>
+        <if test="blogCategoryId!=null">
+            AND blog_category_id = #{blogCategoryId}
+        </if>
+        order by blog_id desc
+        <if test="start!=null and limit!=null">
+            limit #{start},#{limit}
+        </if>
     </select>
     <!--更新状态有两个状态要改-->
     <!-- <update id="updateStatus" parameterType="java.util.Map">

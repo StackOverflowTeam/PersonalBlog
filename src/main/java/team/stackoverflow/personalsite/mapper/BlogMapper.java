@@ -3,17 +3,21 @@ package team.stackoverflow.personalsite.mapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import team.stackoverflow.personalsite.pojo.Blog;
+import team.stackoverflow.personalsite.util.PageQueryUtil;
 
 import java.util.List;
-import java.util.Map;
 
 @Mapper
 public interface BlogMapper {
     int deleteByPrimaryKey(Long blogId);
 
     int insert(Blog record);
+    
+    List<Blog> findBlogList(PageQueryUtil pageUtil);
 
     int insertSelective(Blog record);
+    
+    int getTotalBlogs(PageQueryUtil pageUtil);
 
     Blog selectByPrimaryKey(Long blogId);
 
@@ -22,10 +26,6 @@ public interface BlogMapper {
     int updateByPrimaryKeyWithBLOBs(Blog record);
 
     int updateByPrimaryKey(Blog record);
-
-    List<Blog> getBlogsListByConditionPages(Map<String, Object> blogMap);
-
-    int getCount(Map<String, Object> blogMap);
     
     int updateBlogCategorys(@Param("categoryName") String categoryName, @Param("categoryId") Integer categoryId, @Param("ids")Integer[] ids);
 

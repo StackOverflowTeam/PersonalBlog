@@ -1,15 +1,12 @@
 package team.stackoverflow.personalsite.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import team.stackoverflow.personalsite.service.BlogTagService;
 import team.stackoverflow.personalsite.util.PageQueryUtil;
-import team.stackoverflow.personalsite.util.Result;
-import team.stackoverflow.personalsite.util.ResultGenerator;
+import team.stackoverflow.personalsite.util.PageResult;
+import team.stackoverflow.personalsite.util.RespBean;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
@@ -18,51 +15,39 @@ import java.util.Map;
  * @Version 1.0
  */
 
-@Controller
+@RestController
+@RequestMapping("/tags")
 public class BlogTagController {
 	@Resource
 	private BlogTagService tagService;
 	
-	@GetMapping("/tags")
-	public String tagPage(HttpServletRequest request) {
-		request.setAttribute("path", "tags");
-		return "tag";
-	}
-	
-	@GetMapping("/tags/list")
-	@ResponseBody
-	public Result list(@RequestParam Map<String, Object> params) {
-		if (StringUtils.isEmpty(params.get("page")) || StringUtils.isEmpty(params.get("limit"))) {
-			return ResultGenerator.genFailResult("参数异常！");
-		}
+	@GetMapping("/list")
+	public PageResult list(@RequestParam Map<String, Object> params) {
 		PageQueryUtil pageUtil = new PageQueryUtil(params);
-		return ResultGenerator.genSuccessResult(tagService.getBlogTagPage(pageUtil));
+		return tagService.getBlogTagPage(pageUtil);
 	}
 	
 	
-	@PostMapping("/tags/save")
-	@ResponseBody
-	public Result save(@RequestParam("tagName") String tagName) {
-		if (StringUtils.isEmpty(tagName)) {
-			return ResultGenerator.genFailResult("参数异常！");
-		}
+	@PostMapping("/save")
+	public RespBean save(@RequestParam("tagName") String tagName) {
 		if (tagService.saveTag(tagName)) {
-			return ResultGenerator.genSuccessResult();
+			return new RespBean("success", "success");
 		} else {
-			return ResultGenerator.genFailResult("标签名称重复");
+			return new RespBean("error", "failure");
 		}
 	}
 	
-	@PostMapping("/tags/delete")
-	@ResponseBody
-	public Result delete(@RequestBody Integer[] ids) {
-		if (ids.length < 1) {
-			return ResultGenerator.genFailResult("参数异常！");
-		}
+	@PostMapping("/delete")
+	public RespBean delete(@RequestBody Integer[] ids) {
 		if (tagService.deleteBatch(ids)) {
-			return ResultGenerator.genSuccessResult();
+			return new RespBean("success", "success");
 		} else {
-			return ResultGenerator.genFailResult("有关联数据请勿强行删除");
+			return new RespBean("error", "failure");
 		}
+	}
+	
+	@RequestMapping(value = "/count", method = RequestMethod.POST)
+	public int countTag() {
+		return tagService.getTotalTags();
 	}
 }
