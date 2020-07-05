@@ -28,6 +28,8 @@ public interface BlogMapper {
     int updateByPrimaryKey(Blog record);
     
     int updateBlogCategorys(@Param("categoryName") String categoryName, @Param("categoryId") Integer categoryId, @Param("ids")Integer[] ids);
+    
+    int deleteBatch(Integer[] ids);
 
 //    有两种状态需要更新
 //    int updateStatus(Map<String,Object> statusMap);

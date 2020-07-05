@@ -1,6 +1,7 @@
 package team.stackoverflow.personalsite.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import team.stackoverflow.personalsite.pojo.AdminUser;
 
 @Mapper
@@ -16,6 +17,13 @@ public interface AdminUserMapper {
     int updateByPrimaryKeySelective(AdminUser record);
 
     int updateByPrimaryKey(AdminUser record);
-
-    AdminUser selectByAdminUser(AdminUser adminUser);
+    
+    /**
+     * 登陆方法
+     *
+     * @param userName
+     * @param password
+     * @return
+     */
+    AdminUser login(@Param("userName") String userName, @Param("password") String password);
 }

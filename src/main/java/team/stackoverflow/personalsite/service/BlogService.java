@@ -25,4 +25,6 @@ public interface BlogService {
     int updateState(Map<String, Object> stateMap);
     
     int getTotalBlogs();
+    
+    Boolean deleteBatch(Integer[] ids);
 }

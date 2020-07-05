@@ -27,6 +27,13 @@
     blog_content
   </sql>
 
+    <update id="deleteBatch">
+        update ps_blog
+        set is_deleted=1 where blog_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
     <select id="getTotalBlogs" parameterType="Map" resultType="int">
         select count(*) from ps_blog
         where is_deleted=0

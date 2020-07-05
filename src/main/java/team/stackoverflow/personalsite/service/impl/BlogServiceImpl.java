@@ -55,4 +55,9 @@ public class BlogServiceImpl implements BlogService {
     public int getTotalBlogs() {
         return blogMapper.getTotalBlogs(null);
     }
+    
+    @Override
+    public Boolean deleteBatch(Integer[] ids) {
+        return blogMapper.deleteBatch(ids) > 0;
+    }
 }

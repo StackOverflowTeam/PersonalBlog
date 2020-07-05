@@ -12,11 +12,11 @@
     admin_user_id, login_user_name, login_password, nick_name, locked
   </sql>
 
-    <select id="selectByAdminUser" resultMap="AdminUserResultMap" parameterType="AdminUser">
+    <select id="login" resultMap="AdminUserResultMap">
         select
-        <include refid="AdminUser_Column_List"/>
+        <include refid="AdminUser_Column_List" />
         from ps_admin_user
-        where login_user_name=#{loginUserName} and login_password=#{loginPassword}
+        where login_user_name = #{userName,jdbcType=VARCHAR} AND login_password=#{password,jdbcType=VARCHAR} AND locked = 0
     </select>
 
     <!--以下自动生成-->
