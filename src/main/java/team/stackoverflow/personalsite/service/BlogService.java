@@ -14,17 +14,17 @@ import java.util.Map;
  */
 
 public interface BlogService {
-    PageResult getBlogPage(PageQueryUtil pageUtil);
-
-    Blog selectByPrimaryKey(Long blogId);
-
-    int saveBlog(Blog blog);
-
-    int updateBlog(Blog blog);
-
-    int updateState(Map<String, Object> stateMap);
-    
-    int getTotalBlogs();
-    
-    Boolean deleteBatch(Integer[] ids);
+	PageResult getBlogPage(PageQueryUtil pageUtil);
+	
+	Blog selectByPrimaryKey(Long blogId);
+	
+	int saveBlog(Blog blog);
+	
+	int updateBlog(Blog blog);
+	
+	int updateState(Map<String, Object> stateMap);
+	
+	int getTotalBlogs();
+	
+	Boolean deleteBatch(Integer[] ids);
 }

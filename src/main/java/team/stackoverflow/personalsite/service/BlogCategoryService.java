@@ -30,7 +30,7 @@ public interface BlogCategoryService {
 	 * @param categoryIcon
 	 * @return
 	 */
-	Boolean saveCategory(String categoryName,String categoryIcon);
+	Boolean saveCategory(String categoryName, String categoryIcon);
 	
 	Boolean updateCategory(Integer categoryId, String categoryName, String categoryIcon);
 	

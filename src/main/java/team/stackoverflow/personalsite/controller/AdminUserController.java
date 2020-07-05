@@ -1,7 +1,6 @@
 package team.stackoverflow.personalsite.controller;
 
 import com.google.code.kaptcha.impl.DefaultKaptcha;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import team.stackoverflow.personalsite.pojo.AdminUser;
@@ -16,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.util.Map;
 
 /**
  * @ClassName AdminController
@@ -27,27 +27,15 @@ import java.io.ByteArrayOutputStream;
 @RestController
 @RequestMapping("/admin")
 public class AdminUserController {
-
     @Resource
     private AdminUserService adminUserService;
     @Resource
     private DefaultKaptcha captchaProducer;
-
-//    /**
-//     * @return
-//     * @Author 张清
-//     * @Description 登录接口
-//     * @Date 2020/7/2 8:13
-//     * @Param
-//     **/
-//    @RequestMapping(value = "/login", method = RequestMethod.POST)
-//    public AdminUser login(@RequestBody AdminUser adminUser) {
-//        return adminUserService.login(adminUser);
-//    }
     
     //验证码
     @GetMapping("/captcha")
-    public void defaultCaptcha(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
+    public void defaultCaptcha(HttpServletRequest httpServletRequest,
+                               HttpServletResponse httpServletResponse) throws Exception {
         byte[] captchaOutputStream;
         ByteArrayOutputStream imgOutputStream = new ByteArrayOutputStream();
         try {
@@ -72,15 +60,16 @@ public class AdminUserController {
     }
     
     //带session的登录接口
-    @PostMapping(value = "/login")
-    public RespBean login(@RequestParam("userName") String userName,
-                          @RequestParam("password") String password,
-                          @RequestParam("verifyCode") String verifyCode,
+    @PostMapping(value = "/login", produces = "application/json;charset=utf-8;")
+    public RespBean login(@RequestBody Map<String, Object> jsonParam,
                           HttpSession session) {
+        String userName = jsonParam.get("userName").toString();
+        String password = jsonParam.get("password").toString();
+        String verifyCode = jsonParam.get("verifyCode").toString();
         String captchaCode = session.getAttribute("verifyCode") + "";
         if (StringUtils.isEmpty(captchaCode) || !verifyCode.equals(captchaCode)) {
             session.setAttribute("errorMsg", "验证码错误");
-            return new RespBean("error", "failure");
+            return new RespBean("error", "验证码错误");
         }
         AdminUser adminUser = adminUserService.login(userName, password);
         if (adminUser != null) {
@@ -91,7 +80,7 @@ public class AdminUserController {
             return new RespBean("success", "success");
         } else {
             session.setAttribute("errorMsg", "登陆失败");
-            return new RespBean("error", "failure");
+            return new RespBean("error", "登陆失败");
         }
     }
     
