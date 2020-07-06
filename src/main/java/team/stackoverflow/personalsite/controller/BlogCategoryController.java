@@ -54,8 +54,9 @@ public class BlogCategoryController {
 	
 	
 	//分类删除
-	@RequestMapping(value = "/delete", method = RequestMethod.POST)
-	public RespBean delete(@RequestBody Integer[] ids) {
+	@RequestMapping(value = "/delete", method = RequestMethod.POST, produces = "application/json;charset=utf-8;")
+	public RespBean delete(@RequestBody Map<String, Object> jsonParam) {
+		Integer[] ids = (Integer[]) jsonParam.get("ids");
 		if (blogCategoryService.deleteBatch(ids)) {
 			return new RespBean("success", "success");
 		} else {
