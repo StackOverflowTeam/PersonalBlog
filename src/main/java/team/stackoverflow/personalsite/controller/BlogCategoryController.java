@@ -1,3 +1,4 @@
+
 package team.stackoverflow.personalsite.controller;
 
 import org.springframework.web.bind.annotation.*;
@@ -63,10 +64,20 @@ public class BlogCategoryController {
 			return new RespBean("error", "failure");
 		}
 	}
-	
+
 	//分类数量
 	@RequestMapping(value = "/count", method = RequestMethod.GET)
 	public int countCategory() {
 		return blogCategoryService.getTotalCategories();
+	}
+
+	//	单个删除 zq
+	@RequestMapping(value = "/updateStatus", method = RequestMethod.POST)
+	public RespBean updateStatus(Map<String, Object> stateMap) {
+		int result = blogCategoryService.updateStatus(stateMap);
+		if (result > 0) {
+			return new RespBean("success", "success");
+		}
+		return new RespBean("error", "error");
 	}
 }
