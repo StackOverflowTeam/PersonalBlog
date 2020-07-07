@@ -7,9 +7,6 @@ import team.stackoverflow.personalsite.util.PageResult;
 import team.stackoverflow.personalsite.util.RespBean;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,36 +42,27 @@ public class BlogCategoryController {
 	
 	//分类修改
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
-    public RespBean update(@RequestParam("categoryId") Integer categoryId,
-                           @RequestParam("categoryName") String categoryName,
-                           @RequestParam("categoryIcon") String categoryIcon) {
-        if (blogCategoryService.updateCategory(categoryId, categoryName, categoryIcon)) {
-            return new RespBean("success", "success");
-        } else {
-            return new RespBean("error", "failure");
-        }
-    }
-
-    //	单个删除 zq
-    @RequestMapping(value = "/updateStatus", method = RequestMethod.POST)
-    public RespBean updateStatus(Map<String, Object> stateMap) {
-        int result = blogCategoryService.updateStatus(stateMap);
-        if (result > 0) {
-            return new RespBean("success", "success");
-        }
-        return new RespBean("error", "error");
-    }
-
-    //分类删除
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public RespBean delete(@RequestBody Integer[] ids) {
-
-        if (blogCategoryService.deleteBatch(ids)) {
-            return new RespBean("success", "success");
-        } else {
-            return new RespBean("error", "failure");
-        }
-    }
+	public RespBean update(@RequestParam("categoryId") Integer categoryId,
+	                       @RequestParam("categoryName") String categoryName,
+	                       @RequestParam("categoryIcon") String categoryIcon) {
+		if (blogCategoryService.updateCategory(categoryId, categoryName, categoryIcon)) {
+			return new RespBean("success", "success");
+		} else {
+			return new RespBean("error", "failure");
+		}
+	}
+	
+	
+	//分类删除
+	@RequestMapping(value = "/delete", method = RequestMethod.POST, produces = "application/json;charset=utf-8;")
+	public RespBean delete(@RequestBody Map<String, Object> jsonParam) {
+		Integer[] ids = (Integer[]) jsonParam.get("ids");
+		if (blogCategoryService.deleteBatch(ids)) {
+			return new RespBean("success", "success");
+		} else {
+			return new RespBean("error", "failure");
+		}
+	}
 	
 	//分类数量
 	@RequestMapping(value = "/count", method = RequestMethod.GET)

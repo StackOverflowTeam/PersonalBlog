@@ -32,6 +32,8 @@ public class AdminUserController {
     @Resource
     private DefaultKaptcha captchaProducer;
     
+    String captchaCode;
+    
     //验证码
     @GetMapping("/captcha")
     public void defaultCaptcha(HttpServletRequest httpServletRequest,
@@ -40,9 +42,8 @@ public class AdminUserController {
         ByteArrayOutputStream imgOutputStream = new ByteArrayOutputStream();
         try {
             //生产验证码字符串并保存到session中
-            String verifyCode = captchaProducer.createText();
-            httpServletRequest.getSession().setAttribute("verifyCode", verifyCode);
-            BufferedImage challenge = captchaProducer.createImage(verifyCode);
+            captchaCode = captchaProducer.createText();
+            BufferedImage challenge = captchaProducer.createImage(captchaCode);
             ImageIO.write(challenge, "jpg", imgOutputStream);
         } catch (IllegalArgumentException e) {
             httpServletResponse.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -61,14 +62,13 @@ public class AdminUserController {
     
     //带session的登录接口
     @PostMapping(value = "/login", produces = "application/json;charset=utf-8;")
-    public RespBean login(@RequestBody Map<String, Object> jsonParam,
+    public RespBean login(@RequestBody Map<String, String> jsonParam,
                           HttpSession session) {
-        String userName = jsonParam.get("userName").toString();
-        String password = jsonParam.get("password").toString();
-        String verifyCode = jsonParam.get("verifyCode").toString();
-        String captchaCode = session.getAttribute("verifyCode") + "";
-        if (StringUtils.isEmpty(captchaCode) || !verifyCode.equals(captchaCode)) {
-            session.setAttribute("errorMsg", "验证码错误");
+        System.out.println(jsonParam.toString());
+        String userName = jsonParam.get("userName");
+        String password = jsonParam.get("password");
+        String verifyCode = jsonParam.get("verifyCode");
+        if (!captchaCode.equals(verifyCode)) {
             return new RespBean("error", "验证码错误");
         }
         AdminUser adminUser = adminUserService.login(userName, password);
@@ -79,7 +79,6 @@ public class AdminUserController {
             session.setMaxInactiveInterval(60 * 60 * 2);
             return new RespBean("success", "success");
         } else {
-            session.setAttribute("errorMsg", "登陆失败");
             return new RespBean("error", "登陆失败");
         }
     }
