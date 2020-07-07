@@ -1,6 +1,7 @@
 package team.stackoverflow.personalsite.controller;
 
 import org.springframework.web.bind.annotation.*;
+import team.stackoverflow.personalsite.pojo.BlogTagRelation;
 import team.stackoverflow.personalsite.pojo.Link;
 import team.stackoverflow.personalsite.service.LinkService;
 import team.stackoverflow.personalsite.util.PageQueryUtil;
@@ -84,10 +85,33 @@ public class LinkController {
 			return new RespBean("error", "failure");
 		}
 	}
-	
+
 	//获取数量
 	@RequestMapping(value = "/count", method = RequestMethod.POST)
 	public int countLink() {
 		return linkService.getTotalLinks();
+	}
+
+	@RequestMapping(value = "/updateStatus", method = RequestMethod.POST)
+	public RespBean updataStatus(Map<String, Object> stateMap) {
+		int result = linkService.updateStatus(stateMap);
+		if (result > 0) {
+			return new RespBean("success", "success");
+		}
+		return new RespBean("error", "error");
+	}
+
+	@RequestMapping(value = "/linkSave", method = RequestMethod.POST)
+	public RespBean saveLink(@RequestBody Link link) {
+		int result = 0;
+		if (link.getLinkId() == null) {
+			result = linkService.savelink(link);
+		} else {
+			result = linkService.updatelink(link);
+		}
+		if (result > 0) {
+			return new RespBean("success", "success");
+		}
+		return new RespBean("error", "error");
 	}
 }

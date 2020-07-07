@@ -12,6 +12,7 @@ import team.stackoverflow.personalsite.util.PageResult;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author skyrocketing Hong
@@ -55,14 +56,34 @@ public class BlogTagServiceImpl implements BlogTagService {
 		//已存在关联关系不删除
 		List<Long> relations = relationMapper.selectDistinctTagIds(ids);
 		if (!CollectionUtils.isEmpty(relations)) {
-			return false;
-		}
-		//删除tag
-		return blogTagMapper.deleteBatch(ids) > 0;
-	}
-	
-	@Override
-	public List<BlogTagCount> getBlogTagCountForIndex() {
-		return blogTagMapper.getTagCount();
-	}
+            return false;
+        }
+        //删除tag
+        return blogTagMapper.deleteBatch(ids) > 0;
+    }
+
+    @Override
+    public List<BlogTagCount> getBlogTagCountForIndex() {
+        return blogTagMapper.getTagCount();
+    }
+
+    @Override
+    public int saveTags(BlogTag tag) {
+        return blogTagMapper.insertSelective(tag);
+    }
+
+    @Override
+    public int updateTags(BlogTag tag) {
+        return blogTagMapper.updateByPrimaryKeySelective(tag);
+    }
+
+    @Override
+    public int updateStatus(Map<String, Object> stateMap) {
+        return blogTagMapper.updateStatus(stateMap);
+    }
+
+    @Override
+    public BlogTag selectByPrimaryKey(Integer tagId) {
+        return blogTagMapper.selectByPrimaryKey(tagId);
+    }
 }

@@ -5,6 +5,7 @@ import team.stackoverflow.personalsite.util.PageQueryUtil;
 import team.stackoverflow.personalsite.util.PageResult;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author skyrocketing Hong
@@ -27,14 +28,16 @@ public interface BlogCategoryService {
 	 * 添加分类数据
 	 *
 	 * @param categoryName
-	 * @param categoryIcon
-	 * @return
-	 */
-	Boolean saveCategory(String categoryName, String categoryIcon);
-	
-	Boolean updateCategory(Integer categoryId, String categoryName, String categoryIcon);
-	
-	Boolean deleteBatch(Integer[] ids);
-	
-	List<BlogCategory> getAllCategories();
+     * @param categoryIcon
+     * @return
+     */
+    Boolean saveCategory(String categoryName, String categoryIcon);
+
+    Boolean updateCategory(Integer categoryId, String categoryName, String categoryIcon);
+
+    Boolean deleteBatch(Integer[] ids);
+
+    List<BlogCategory> getAllCategories();
+
+    int updateStatus(Map<String, Object> stateMap);
 }

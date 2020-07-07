@@ -27,15 +27,22 @@ public interface LinkService {
 	Boolean saveLink(Link link);
 	
 	Link selectById(Integer id);
-	
+
 	Boolean updateLink(Link tempLink);
-	
+
 	Boolean deleteBatch(Integer[] ids);
-	
+
 	/**
 	 * 返回友链页面所需的所有数据
 	 *
 	 * @return
 	 */
 	Map<Byte, List<Link>> getLinksForLinkPage();
+
+	int updateStatus(Map<String, Object> statesMap);
+
+	int savelink(Link link);
+
+	int updatelink(Link link);
+
 }

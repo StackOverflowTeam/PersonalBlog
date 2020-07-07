@@ -12,6 +12,13 @@
     <sql id="Base_Column_List">
     category_id, category_name, category_icon, category_rank, is_deleted, create_time
   </sql>
+
+    <update id="updateStatus" parameterType="java.util.Map">
+        update ps_blog_category
+        set is_deleted = 1
+        where category_id = #{categoryId,jdbcType=INTEGER}
+    </update>
+
     <select id="selectByPrimaryKey" parameterType="Integer" resultMap="BlogCategoryResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -60,6 +67,7 @@
       #{categoryRank,jdbcType=INTEGER}, #{isDeleted,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}
       )
   </insert>
+
     <insert id="insertSelective" parameterType="BlogCategory">
         insert into ps_blog_category
         <trim prefix="(" suffix=")" suffixOverrides=",">

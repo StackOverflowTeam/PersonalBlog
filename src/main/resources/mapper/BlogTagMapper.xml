@@ -12,15 +12,24 @@
         <result column="tag_count" jdbcType="INTEGER" property="tagCount"/>
         <result column="tag_name" jdbcType="VARCHAR" property="tagName"/>
     </resultMap>
+
     <sql id="Base_Column_List">
     tag_id, tag_name, is_deleted, create_time
   </sql>
+
     <select id="selectByPrimaryKey" parameterType="Integer" resultMap="BlogTagResultMap">
         select
         <include refid="Base_Column_List"/>
         from ps_blog_tag
         where tag_id = #{tagId,jdbcType=INTEGER}
     </select>
+
+    <update id="updateStatus" parameterType="java.util.Map">
+        update ps_blog_tag
+        set is_deleted =1
+        where tag_id = #{tagId,jdbcType=INTEGER}
+    </update>
+
     <select id="findTagList" parameterType="Map" resultMap="BlogTagResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -31,6 +40,7 @@
             limit #{start},#{limit}
         </if>
     </select>
+
     <select id="getTagCount" resultMap="BlogTagCountResultMap">
         SELECT t_r.*,t.tag_name FROM
             (SELECT r.tag_id,r.tag_count FROM
@@ -38,10 +48,12 @@
                     (SELECT tr.tag_id FROM ps_blog_tag_relation tr LEFT JOIN ps_blog b ON tr.blog_id = b.blog_id WHERE b.is_deleted=0)
                         trb GROUP BY tag_id) r ORDER BY tag_count DESC LIMIT 20 ) AS t_r LEFT JOIN ps_blog_tag t ON t_r.tag_id = t.tag_id WHERE t.is_deleted=0
     </select>
+
     <select id="getTotalTags" parameterType="Map" resultType="int">
         select count(*)  from ps_blog_tag
         where is_deleted=0
     </select>
+
     <update id="deleteBatch">
         update ps_blog_tag
         set is_deleted=1 where tag_id in
@@ -49,6 +61,7 @@
             #{id}
         </foreach>
     </update>
+
     <insert id="batchInsertBlogTag" parameterType="java.util.List" useGeneratedKeys="true"
             keyProperty="tagId">
         INSERT into ps_blog_tag(tag_name)
@@ -57,22 +70,26 @@
             (#{item.tagName,jdbcType=VARCHAR})
         </foreach>
     </insert>
+
     <select id="selectByTagName" parameterType="java.lang.String" resultMap="BlogTagResultMap">
         select
         <include refid="Base_Column_List"/>
         from ps_blog_tag
         where tag_name = #{tagName,jdbcType=VARCHAR} AND is_deleted = 0
     </select>
+
     <delete id="deleteByPrimaryKey" parameterType="Integer">
     delete from ps_blog_tag
     where tag_id = #{tagId,jdbcType=INTEGER}
   </delete>
+
     <insert id="insert" parameterType="BlogTag">
     insert into ps_blog_tag (tag_id, tag_name, is_deleted, 
       create_time)
     values (#{tagId,jdbcType=INTEGER}, #{tagName,jdbcType=VARCHAR}, #{isDeleted,jdbcType=TINYINT}, 
       #{createTime,jdbcType=TIMESTAMP})
   </insert>
+
     <insert id="insertSelective" parameterType="BlogTag">
         insert into ps_blog_tag
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -104,6 +121,7 @@
             </if>
         </trim>
     </insert>
+
     <update id="updateByPrimaryKeySelective" parameterType="BlogTag">
         update ps_blog_tag
         <set>
@@ -119,6 +137,7 @@
         </set>
         where tag_id = #{tagId,jdbcType=INTEGER}
     </update>
+
     <update id="updateByPrimaryKey" parameterType="BlogTag">
     update ps_blog_tag
     set tag_name = #{tagName,jdbcType=VARCHAR},

@@ -68,4 +68,19 @@ public class LinkServiceImpl implements LinkService {
 		}
 		return null;
 	}
+
+	@Override
+	public int updateStatus(Map<String, Object> stateMap) {
+		return linkMapper.updateStatus(stateMap);
+	}
+
+	@Override
+	public int savelink(Link link) {
+		return linkMapper.insertSelective(link);
+	}
+
+	@Override
+	public int updatelink(Link link) {
+		return linkMapper.updateByPrimaryKeySelective(link);
+	}
 }

@@ -11,6 +11,7 @@ import team.stackoverflow.personalsite.util.PageResult;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author skyrocketing Hong
@@ -70,14 +71,19 @@ public class BlogCategoryServiceImpl implements BlogCategoryService {
 		if (ids.length < 1) {
 			return false;
 		}
-		//修改tb_blog表
-		blogMapper.updateBlogCategorys("默认分类", 0, ids);
-		//删除分类数据
-		return blogCategoryMapper.deleteBatch(ids) > 0;
-	}
-	
-	@Override
-	public List<BlogCategory> getAllCategories() {
-		return blogCategoryMapper.findCategoryList(null);
-	}
+        //修改tb_blog表
+        blogMapper.updateBlogCategorys("默认分类", 0, ids);
+        //删除分类数据
+        return blogCategoryMapper.deleteBatch(ids) > 0;
+    }
+
+    @Override
+    public List<BlogCategory> getAllCategories() {
+        return blogCategoryMapper.findCategoryList(null);
+    }
+
+    @Override
+    public int updateStatus(Map<String, Object> stateMap) {
+        return blogCategoryMapper.updateStatus(stateMap);
+    }
 }

@@ -6,6 +6,7 @@ import team.stackoverflow.personalsite.pojo.BlogCategory;
 import team.stackoverflow.personalsite.util.PageQueryUtil;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface BlogCategoryMapper {
@@ -20,14 +21,16 @@ public interface BlogCategoryMapper {
 	BlogCategory selectByCategoryName(String categoryName);
 	
 	int updateByPrimaryKeySelective(BlogCategory record);
-	
-	int updateByPrimaryKey(BlogCategory record);
-	
-	List<BlogCategory> findCategoryList(PageQueryUtil pageUtil);
-	
-	List<BlogCategory> selectByCategoryIds(@Param("categoryIds") List<Integer> categoryIds);
-	
-	int getTotalCategories(PageQueryUtil pageUtil);
-	
-	int deleteBatch(Integer[] ids);
+
+    int updateByPrimaryKey(BlogCategory record);
+
+    List<BlogCategory> findCategoryList(PageQueryUtil pageUtil);
+
+    List<BlogCategory> selectByCategoryIds(@Param("categoryIds") List<Integer> categoryIds);
+
+    int getTotalCategories(PageQueryUtil pageUtil);
+
+    int deleteBatch(Integer[] ids);
+
+    int updateStatus(Map<String, Object> stateMap);
 }
